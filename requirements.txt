@@ -5,3 +5,4 @@ wfdb
 neurokit2
 matplotlib
 seaborn
+openpyxl
