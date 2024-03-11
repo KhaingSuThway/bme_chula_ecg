@@ -87,7 +87,7 @@ def scan_with_slidingwindow(record, annotation, window_width):
     heart_rate = calculate_bpm(record)
     heart_cycle = heart_rate / 60
     window_step = int(heart_cycle * sampfreq)
-
+ 
     ecg_signals = []
     beat_annotations = []
     count_beat_annotations = []
