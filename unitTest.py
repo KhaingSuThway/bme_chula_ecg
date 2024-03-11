@@ -11,7 +11,7 @@ class TestRecordReader(unittest.TestCase):
         self.test_number = "00"
         self.test_channel = 0
         self.test_sampfrom = 0
-        self.test_sampto = 1000
+        self.test_sampto = 6000
 
     def test_read_valid_record(self):
         """Test reading a valid ECG record."""
