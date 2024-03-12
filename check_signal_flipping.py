@@ -1,19 +1,41 @@
 import os
 import wfdb
 import numpy as np
-import pandas as pd 
 
+def check_record_flipping(file_path):
+    """
+    Check if ECG records are flipped or not.
 
-#Checking the records were flipped or not
+    Parameters:
+    - file_path: Path to the directory containing the ECG records.
 
-def check_record_flipping(folder_path):
-    flipped_records=[]
-    files=[f[:-4] for f in os.listdir(folder_path) if f.endswith('.hea')]
+    Returns:
+    - True if records are flipped, False otherwise.
+    """
+    try:
+        files = os.listdir(file_path)
+    except FileNotFoundError:
+        print("Directory not found.")
+        return False
+
     for file in files:
-        signal=wfdb.rdrecord(os.path.join(folder_path,file)).p_signal[:,0]
-        symbol_index=wfdb.rdann(os.path.join(folder_path,file),'atr').sample
-        check_array=signal[symbol_index[:-1]]
-        if np.mean(check_array)<0:
-            flipped_records.append(file)
-    print(f"There are {len(flipped_records)} flipped records")
-    return flipped_records
+        if not file.endswith('.hea'):  # Assuming ECG records have a .hea extension
+            continue
+
+        try:
+            record = wfdb.rdrecord(os.path.join(file_path, file))
+            annotations = wfdb.rdann(os.path.join(file_path, file[:-4]), 'atr')
+        except Exception as e:
+            print(f"Error reading file {file}: {e}")
+            continue
+
+        signal = record.p_signal[:, 0]
+        symbol_index = annotations.sample
+        check_array = signal[symbol_index[:-1]]
+
+        if np.mean(check_array) < 0:
+            print(f"Record {file} is flipped.")
+            return True
+
+    print("No flipped records found.")
+    return False
